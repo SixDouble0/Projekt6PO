@@ -7,8 +7,9 @@ class SkladnikMajatkowy:
         self.nazwa = nazwa
         self.stan = stan
 
+    @abstractmethod
     def __str__(self):
-        return f'ID: {self.id}, {self.nazwa} (stan: {self.stan})'
+        pass
 
 class Sprzet(SkladnikMajatkowy):
     def __init__(self, nazwa, stan):
