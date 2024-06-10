@@ -1,4 +1,6 @@
-class SkladnikMajatkowy:
+from abc import ABC, abstractmethod
+
+class SkladnikMajatkowy(ABC):
     _id_counter = 0  
 
     def __init__(self, nazwa, stan):
@@ -7,16 +9,23 @@ class SkladnikMajatkowy:
         self.nazwa = nazwa
         self.stan = stan
 
+    @abstractmethod
     def __str__(self):
-        return f'ID: {self.id}, {self.nazwa} (stan: {self.stan})'
+        pass
 
 class Sprzet(SkladnikMajatkowy):
     def __init__(self, nazwa, stan):
         super().__init__(nazwa, stan)
 
+    def __str__(self):
+        return f'ID: {self.id}, {self.nazwa} (stan: {self.stan})'
+
 class Meble(SkladnikMajatkowy):
     def __init__(self, nazwa, stan):
         super().__init__(nazwa, stan)
+
+    def __str__(self):
+        return f'ID: {self.id}, {self.nazwa} (stan: {self.stan})'
 
 class Sala:
     def __init__(self, numer):
@@ -89,11 +98,25 @@ class System:
         return result
 
     def zapisz_raport(self, nazwa_pliku):
+        wymagane_skladniki = {
+            'Krzesło': 'meble',
+            'Biurko': 'meble',
+            'Komputer': 'sprzet'
+        }
         with open(nazwa_pliku, 'w') as plik:
             for sala in self.sale:
                 plik.write(f'Sala numer {sala.numer}\n')
+                obecne_skladniki = {skladnik.nazwa: skladnik for skladnik in sala.skladniki}
+                brakujace_skladniki = [
+                    nazwa for nazwa, typ in wymagane_skladniki.items()
+                    if nazwa not in obecne_skladniki
+                ]
                 for skladnik in sala.skladniki:
                     plik.write(f'{skladnik.id}, {skladnik.nazwa}, {skladnik.stan}\n')
+                if brakujace_skladniki:
+                    plik.write(f'Brakujące składniki: {", ".join(brakujace_skladniki)}\n')
+                else:
+                    plik.write('Brakujące składniki: brak\n')
                 plik.write('\n')
 
     def wczytaj_raport(self, nazwa_pliku):
@@ -106,6 +129,8 @@ class System:
                 numer_sali = int(linia.split()[2])
                 aktualna_sala = Sala(numer_sali)
                 self.sale.append(aktualna_sala)
+            elif linia.startswith('Brakujące składniki:'):
+                continue  # Ignore this line
             elif linia.strip():
                 skladnik_id, nazwa, stan = linia.strip().split(', ')
                 if aktualna_sala:
@@ -115,6 +140,7 @@ class System:
                         skladnik = Meble(nazwa, stan)
                     skladnik.id = int(skladnik_id)
                     aktualna_sala.dodaj_skladnik(skladnik)
+
     def przenies_skladnik(self, numer_sali_z, numer_sali_do, skladnik_id):
         sala_z = None
         sala_do = None
