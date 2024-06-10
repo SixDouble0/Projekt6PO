@@ -17,7 +17,7 @@ def Okno_glowne():
     Clear_Window()
     frame = customtkinter.CTkFrame(master=root)
     frame.pack(pady=20, padx=60, fill="both", expand=True)
-    frame.pack_propagate(False)
+    
     label = customtkinter.CTkLabel(master=frame, text="Budynek Uczelniany", font=("Roboto", 24))
     label.pack(pady=12, padx=10)
 
@@ -215,10 +215,55 @@ def Zarzadzanie_Skladnikami():
         powrot_button = customtkinter.CTkButton(master=frame, fg_color="red", text="Wróć", command=Zarzadzanie_Skladnikami)
         powrot_button.pack(pady=12, padx=10)
 
+    def Przenies_Skladnik():
+        Clear_Window()
+        frame = customtkinter.CTkFrame(master=root)
+        frame.pack(pady=20, padx=60, fill="both", expand=True)
+        label = customtkinter.CTkLabel(master=frame, text="Przenoszenie Składników", font=("Roboto", 24))
+        label.pack(pady=12, padx=10)
+
+        sala_z_label = customtkinter.CTkLabel(master=frame, text="Numer sali źródłowej:")
+        sala_z_label.pack(pady=5, padx=10)
+        sala_z_entry = customtkinter.CTkEntry(master=frame)
+        sala_z_entry.pack(pady=5, padx=10)
+
+        sala_do_label = customtkinter.CTkLabel(master=frame, text="Numer sali docelowej:")
+        sala_do_label.pack(pady=5, padx=10)
+        sala_do_entry = customtkinter.CTkEntry(master=frame)
+        sala_do_entry.pack(pady=5, padx=10)
+
+        skladnik_id_label = customtkinter.CTkLabel(master=frame, text="ID składnika:")
+        skladnik_id_label.pack(pady=5, padx=10)
+        skladnik_id_entry = customtkinter.CTkEntry(master=frame)
+        skladnik_id_entry.pack(pady=5, padx=10)
+
+        def submit():
+            numer_sali_z = sala_z_entry.get()
+            numer_sali_do = sala_do_entry.get()
+            skladnik_id = skladnik_id_entry.get()
+            if numer_sali_z.isdigit() and numer_sali_do.isdigit() and skladnik_id.isdigit():
+                numer_sali_z = int(numer_sali_z)
+                numer_sali_do = int(numer_sali_do)
+                skladnik_id = int(skladnik_id)
+                wynik = system.przenies_skladnik(numer_sali_z, numer_sali_do, skladnik_id)
+                wynik_label = customtkinter.CTkLabel(master=frame, text=wynik, text_color="green" if "został przeniesiony" in wynik else "red")
+                wynik_label.pack(pady=5, padx=10)
+            else:
+                error = customtkinter.CTkLabel(master=frame, text="Błędne dane.", text_color="red")
+                error.pack(pady=5, padx=10)
+
+        submit_button = customtkinter.CTkButton(master=frame, text="Przenieś", command=submit)
+        submit_button.pack(pady=12, padx=10)
+        powrot_button = customtkinter.CTkButton(master=frame, fg_color="red", text="Wróć", command=Zarzadzanie_Skladnikami)
+        powrot_button.pack(pady=12, padx=10)
+
+    
     dodaj_button = customtkinter.CTkButton(master=frame, text="Dodaj Składnik", width=160, height=40, command=Dodaj_Skladnik)
     dodaj_button.pack(pady=12, padx=10)
     usun_button = customtkinter.CTkButton(master=frame, text="Usuń Składnik", width=160, height=40, command=Usun_Skladnik)
     usun_button.pack(pady=12, padx=10)
+    przenies_button = customtkinter.CTkButton(master=frame, text="Przenieś składnik", width=160, height=40, command=Przenies_Skladnik)
+    przenies_button.pack(pady=12,padx=10)
     powrot_button = customtkinter.CTkButton(master=frame, fg_color="red", text="Wróć", command=Okno_glowne)
     powrot_button.pack(pady=12, padx=10)
 
@@ -235,6 +280,7 @@ def Inwentaryzacja():
 
     powrot_button = customtkinter.CTkButton(master=frame, fg_color="red", text="Wróć", command=Okno_glowne)
     powrot_button.pack(pady=12, padx=10)
+
 
 def Wyszukiwanie_Skladnikow():
     Clear_Window()
