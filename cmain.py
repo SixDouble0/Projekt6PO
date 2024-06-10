@@ -53,84 +53,60 @@ def Zarzadzanie_Salami():
         frame.pack(pady=20, padx=60, fill="both", expand=True)
         label = customtkinter.CTkLabel(master=frame, text="Dodawanie Sal", font=("Roboto", 24))
         label.pack(pady=12, padx=10)
+        numer_sali_entry = customtkinter.CTkEntry(master=frame, placeholder_text="Numer sali")
+        numer_sali_entry.pack(pady=12, padx=10)
 
-        numer_label = customtkinter.CTkLabel(master=frame, text="Numer sali:")
-        numer_label.pack(pady=5, padx=10)
-        numer_entry = customtkinter.CTkEntry(master=frame)
-        numer_entry.pack(pady=5, padx=10)
-        
-        def submit():
-            numer = numer_entry.get()
+        def Dodaj():
+            numer = numer_sali_entry.get()
             if numer.isdigit():
-                numer = int(numer)
-                sala = Sala(numer)
+                sala = Sala(int(numer))
                 system.dodaj_sale(sala)
-                success = customtkinter.CTkLabel(master=frame, text="Pomyslnie dodano sale.", text_color="green")
-                success.pack(pady=5, padx=10)
+                customtkinter.CTkLabel(master=frame,text_color="green", text=f"Sala {numer} została dodana.", font=("Roboto", 16)).pack(pady=8, padx=8)
             else:
-                error = customtkinter.CTkLabel(master=frame, text="Błędny numer sali.", text_color="red")
-                error.pack(pady=5, padx=10)
-            
-        submit_button = customtkinter.CTkButton(master=frame, text="Dodaj", command=submit)
-        submit_button.pack(pady=12, padx=10)
-        powrot_button = customtkinter.CTkButton(master=frame, fg_color="red", text="Wróć", command=Zarzadzanie_Salami)
-        powrot_button.pack(pady=12, padx=10)
+                customtkinter.CTkLabel(master=frame,text_color="red", text="Błąd", font=("Roboto", 16)).pack(pady=8, padx=8)
+        dodaj_button = customtkinter.CTkButton(master=frame, text="Dodaj", width=120, height=40, command=Dodaj)
+        dodaj_button.pack(pady=12, padx=10)
 
-    def Usun_sale():
+        back_button = customtkinter.CTkButton(master=frame,fg_color="red", text="Wróć", width=120, height=40, command=Zarzadzanie_Salami)
+        back_button.pack(pady=12, padx=10)
+
+    def Usun_Sale():
         Clear_Window()
         frame = customtkinter.CTkFrame(master=root)
         frame.pack(pady=20, padx=60, fill="both", expand=True)
         label = customtkinter.CTkLabel(master=frame, text="Usuwanie Sal", font=("Roboto", 24))
         label.pack(pady=12, padx=10)
+        numer_sali_entry = customtkinter.CTkEntry(master=frame, placeholder_text="Numer sali")
+        numer_sali_entry.pack(pady=12, padx=10)
 
-        numer_label = customtkinter.CTkLabel(master=frame, text="Numer sali:")
-        numer_label.pack(pady=5, padx=10)
-        numer_entry = customtkinter.CTkEntry(master=frame)
-        numer_entry.pack(pady=5, padx=10)
+        def Usun():
+            try:
+                numer = numer_sali_entry.get()
+                if numer.isdigit():
+                    system.usun_sale(int(numer))
+                    customtkinter.CTkLabel(master=frame, text_color="green",text=f"Sala {numer} została usunięta.", font=("Roboto", 16)).pack(pady=12, padx=10)
+            except Exception as e:
+                customtkinter.CTkLabel(master=frame,text_color="green", text=e, font=("Roboto", 16)).pack(pady=8, padx=8)
+        usun_button = customtkinter.CTkButton(master=frame, text="Usuń", width=120, height=40, command=Usun)
+        usun_button.pack(pady=12, padx=10)
 
-        def submit():
-            numer = numer_entry.get()
-            if numer.isdigit():
-                numer = int(numer)
-                system.usun_sale(numer)
-                success = customtkinter.CTkLabel(master=frame, text="Pomyslnie usunięto sale.", text_color="green")
-                success.pack(pady=5, padx=10)
-            else:
-                error = customtkinter.CTkLabel(master=frame, text="Błąd.", text_color="red")
-                error.pack(pady=5, padx=10)
-            
-        submit_button = customtkinter.CTkButton(master=frame, text="Usuń", command=submit)
-        submit_button.pack(pady=12, padx=10)
-        powrot_button = customtkinter.CTkButton(master=frame, fg_color="red", text="Wróć", command=Zarzadzanie_Salami)
-        powrot_button.pack(pady=12, padx=10)
+        back_button = customtkinter.CTkButton(master=frame, text="Wróć",fg_color="red", width=120, height=40, command=Zarzadzanie_Salami)
+        back_button.pack(pady=12, padx=10)
 
-    def Przegladaj_Sale():
-        Clear_Window()
-        frame = customtkinter.CTkFrame(master=root)
-        frame.pack(pady=20, padx=60, fill="both", expand=True)
-        label = customtkinter.CTkLabel(master=frame, text="Przegladanie Sal", font=("Roboto", 24))
-        label.pack(pady=12, padx=10)
-
-        sale_info = "\n".join(str(sala) for sala in system.sale)
-        sale_label = customtkinter.CTkLabel(master=frame, text=sale_info)
-        sale_label.pack(pady=12, padx=10)
-
-        powrot_button = customtkinter.CTkButton(master=frame, fg_color="red", text="Wróć", command=Zarzadzanie_Salami)
-        powrot_button.pack(pady=12, padx=10)
-
-    dodaj_button = customtkinter.CTkButton(master=frame, text="Dodaj Sale", width=160, height=40, command=Dodaj_Sale)
-    dodaj_button.pack(pady=12, padx=10)
-    usun_button = customtkinter.CTkButton(master=frame, text="Usuń Sale", width=160, height=40, command=Usun_sale)
-    usun_button.pack(pady=12, padx=10)
-    przegladaj_button = customtkinter.CTkButton(master=frame, text="Przegladaj Sale", width=160, height=40, command=Przegladaj_Sale)
-    przegladaj_button.pack(pady=12, padx=10)
-    powrot_button = customtkinter.CTkButton(master=frame, fg_color="red", text="Wróć", command=Okno_glowne)
-    powrot_button.pack(pady=12, padx=10)
+    dodaj_sala_button = customtkinter.CTkButton(master=frame, text="Dodaj Salę", width=160, height=40, command=Dodaj_Sale)
+    dodaj_sala_button.pack(pady=12, padx=10)
+    
+    usun_sala_button = customtkinter.CTkButton(master=frame, text="Usuń Salę", width=160, height=40, command=Usun_Sale)
+    usun_sala_button.pack(pady=12, padx=10)
+    
+    back_button = customtkinter.CTkButton(master=frame, text="Wróć",fg_color="red", width=160, height=40, command=Okno_glowne)
+    back_button.pack(pady=12, padx=10)
 
 def Zarzadzanie_Skladnikami():
     Clear_Window()
     frame = customtkinter.CTkFrame(master=root)
     frame.pack(pady=20, padx=60, fill="both", expand=True)
+
     label = customtkinter.CTkLabel(master=frame, text="Zarządzanie Składnikami", font=("Roboto", 24))
     label.pack(pady=12, padx=10)
 
@@ -141,44 +117,32 @@ def Zarzadzanie_Skladnikami():
         label = customtkinter.CTkLabel(master=frame, text="Dodawanie Składników", font=("Roboto", 24))
         label.pack(pady=12, padx=10)
 
-        sala_label = customtkinter.CTkLabel(master=frame, text="Numer sali:")
-        sala_label.pack(pady=5, padx=10)
-        sala_entry = customtkinter.CTkEntry(master=frame)
-        sala_entry.pack(pady=5, padx=10)
+        numer_sali_entry = customtkinter.CTkEntry(master=frame,height=50,width=200, placeholder_text="Numer sali")
+        numer_sali_entry.pack(pady=12, padx=10)
+        typ_skladnika_entry = customtkinter.CTkEntry(master=frame, height=50,width=200,placeholder_text="Typ składnika (sprzet/meble)")
+        typ_skladnika_entry.pack(pady=12, padx=10)
+        nazwa_skladnika_entry = customtkinter.CTkEntry(master=frame,height=50,width=200, placeholder_text="Nazwa składnika")
+        nazwa_skladnika_entry.pack(pady=12, padx=10)
+        stan_skladnika_entry = customtkinter.CTkEntry(master=frame,height=50,width=200, placeholder_text="Stan składnika")
+        stan_skladnika_entry.pack(pady=12, padx=10)
 
-        typ_label = customtkinter.CTkLabel(master=frame, text="Typ składnika (sprzet/meble):")
-        typ_label.pack(pady=5, padx=10)
-        typ_entry = customtkinter.CTkEntry(master=frame)
-        typ_entry.pack(pady=5, padx=10)
+        def Dodaj():
+            try:
+                numer_sali = numer_sali_entry.get()
+                typ_skladnika = typ_skladnika_entry.get()
+                nazwa_skladnika = nazwa_skladnika_entry.get()
+                stan_skladnika = stan_skladnika_entry.get()
+                if numer_sali.isdigit() and typ_skladnika and nazwa_skladnika and stan_skladnika:
+                    system.dodaj_skladnik(int(numer_sali), typ_skladnika, nazwa_skladnika, stan_skladnika)
+                    customtkinter.CTkLabel(master=frame, text_color="green", text="Składnik został dodany.", font=("Roboto", 16)).pack(pady=12, padx=10)
+            except Exception as e:
+                customtkinter.CTkLabel(master=frame,text_color="red", text=e, font=("Roboto", 16)).pack(pady=8, padx=8)
 
-        nazwa_label = customtkinter.CTkLabel(master=frame, text="Nazwa składnika:")
-        nazwa_label.pack(pady=5, padx=10)
-        nazwa_entry = customtkinter.CTkEntry(master=frame)
-        nazwa_entry.pack(pady=5, padx=10)
+        dodaj_button = customtkinter.CTkButton(master=frame, text="Dodaj", width=120, height=40, command=Dodaj)
+        dodaj_button.pack(pady=12, padx=10)
 
-        stan_label = customtkinter.CTkLabel(master=frame, text="Stan składnika:")
-        stan_label.pack(pady=5, padx=10)
-        stan_entry = customtkinter.CTkEntry(master=frame)
-        stan_entry.pack(pady=5, padx=10)
-        
-        def submit():
-            numer_sali = sala_entry.get()
-            typ = typ_entry.get()
-            nazwa = nazwa_entry.get()
-            stan = stan_entry.get()
-            if numer_sali.isdigit() and typ in ["sprzet", "meble"] and nazwa and stan:
-                numer_sali = int(numer_sali)
-                system.dodaj_skladnik(numer_sali, typ, nazwa, stan)
-                success = customtkinter.CTkLabel(master=frame, text="Pomyslnie dodano składnik.", text_color="green")
-                success.pack(pady=5, padx=10)
-            else:
-                error = customtkinter.CTkLabel(master=frame, text="Błędne dane.", text_color="red")
-                error.pack(pady=5, padx=10)
-            
-        submit_button = customtkinter.CTkButton(master=frame, text="Dodaj", command=submit)
-        submit_button.pack(pady=12, padx=10)
-        powrot_button = customtkinter.CTkButton(master=frame, fg_color="red", text="Wróć", command=Zarzadzanie_Skladnikami)
-        powrot_button.pack(pady=12, padx=10)
+        back_button = customtkinter.CTkButton(master=frame, text="Wróć", width=120, height=40,fg_color="red", command=Zarzadzanie_Skladnikami)
+        back_button.pack(pady=12, padx=10)
 
     def Usun_Skladnik():
         Clear_Window()
@@ -187,33 +151,25 @@ def Zarzadzanie_Skladnikami():
         label = customtkinter.CTkLabel(master=frame, text="Usuwanie Składników", font=("Roboto", 24))
         label.pack(pady=12, padx=10)
 
-        sala_label = customtkinter.CTkLabel(master=frame, text="Numer sali:")
-        sala_label.pack(pady=5, padx=10)
-        sala_entry = customtkinter.CTkEntry(master=frame)
-        sala_entry.pack(pady=5, padx=10)
+        numer_sali_entry = customtkinter.CTkEntry(master=frame, placeholder_text="Numer sali")
+        numer_sali_entry.pack(pady=12, padx=10)
+        skladnik_id_entry = customtkinter.CTkEntry(master=frame, placeholder_text="ID składnika")
+        skladnik_id_entry.pack(pady=12, padx=10)
 
-        skladnik_label = customtkinter.CTkLabel(master=frame, text="ID składnika:")
-        skladnik_label.pack(pady=5, padx=10)
-        skladnik_entry = customtkinter.CTkEntry(master=frame)
-        skladnik_entry.pack(pady=5, padx=10)
-        
-        def submit():
-            numer_sali = sala_entry.get()
-            skladnik_id = skladnik_entry.get()
-            if numer_sali.isdigit() and skladnik_id.isdigit():
-                numer_sali = int(numer_sali)
-                skladnik_id = int(skladnik_id)
-                system.usun_skladnik(numer_sali, skladnik_id)
-                success = customtkinter.CTkLabel(master=frame, text="Pomyslnie usunięto składnik.", text_color="green")
-                success.pack(pady=5, padx=10)
-            else:
-                error = customtkinter.CTkLabel(master=frame, text="Błędne dane.", text_color="red")
-                error.pack(pady=5, padx=10)
-            
-        submit_button = customtkinter.CTkButton(master=frame, text="Usuń", command=submit)
-        submit_button.pack(pady=12, padx=10)
-        powrot_button = customtkinter.CTkButton(master=frame, fg_color="red", text="Wróć", command=Zarzadzanie_Skladnikami)
-        powrot_button.pack(pady=12, padx=10)
+        def Usun():
+            try:
+                numer_sali = numer_sali_entry.get()
+                skladnik_id = skladnik_id_entry.get()
+                if numer_sali.isdigit() and skladnik_id.isdigit():
+                    system.usun_skladnik(int(numer_sali), int(skladnik_id))
+                    customtkinter.CTkLabel(master=frame,text_color="green", text=f"Składnik {skladnik_id} został usunięty z sali {numer_sali}.", font=("Roboto", 16)).pack(pady=12, padx=10)
+            except Exception as e:
+                customtkinter.CTkLabel(master=frame,text_color="red", text=e, font=("Roboto", 16)).pack(pady=8, padx=8)
+        usun_button = customtkinter.CTkButton(master=frame, text="Usuń", width=120, height=40, command=Usun)
+        usun_button.pack(pady=12, padx=10)
+
+        back_button = customtkinter.CTkButton(master=frame, text="Wróć", fg_color="red",width=120, height=40, command=Zarzadzanie_Skladnikami)
+        back_button.pack(pady=12, padx=10)
 
     def Przenies_Skladnik():
         Clear_Window()
@@ -222,51 +178,42 @@ def Zarzadzanie_Skladnikami():
         label = customtkinter.CTkLabel(master=frame, text="Przenoszenie Składników", font=("Roboto", 24))
         label.pack(pady=12, padx=10)
 
-        sala_z_label = customtkinter.CTkLabel(master=frame, text="Numer sali źródłowej:")
-        sala_z_label.pack(pady=5, padx=10)
-        sala_z_entry = customtkinter.CTkEntry(master=frame)
-        sala_z_entry.pack(pady=5, padx=10)
+        numer_sali_z_entry = customtkinter.CTkEntry(master=frame, placeholder_text="Numer sali źródłowej")
+        numer_sali_z_entry.pack(pady=12, padx=10)
+        numer_sali_do_entry = customtkinter.CTkEntry(master=frame, placeholder_text="Numer sali docelowej")
+        numer_sali_do_entry.pack(pady=12, padx=10)
+        skladnik_id_entry = customtkinter.CTkEntry(master=frame, placeholder_text="ID składnika")
+        skladnik_id_entry.pack(pady=12, padx=10)
 
-        sala_do_label = customtkinter.CTkLabel(master=frame, text="Numer sali docelowej:")
-        sala_do_label.pack(pady=5, padx=10)
-        sala_do_entry = customtkinter.CTkEntry(master=frame)
-        sala_do_entry.pack(pady=5, padx=10)
+        def Przenies():
+            try:
+                numer_sali_z = numer_sali_z_entry.get()
+                numer_sali_do = numer_sali_do_entry.get()
+                skladnik_id = skladnik_id_entry.get()
+                
+                if numer_sali_z.isdigit() and numer_sali_do.isdigit() and skladnik_id.isdigit():
+                    wynik = system.przenies_skladnik(int(numer_sali_z), int(numer_sali_do), int(skladnik_id))
+                    customtkinter.CTkLabel(master=frame, text_color="green",text=wynik, font=("Roboto", 16)).pack(pady=12, padx=10)
+            except Exception as e:
+                customtkinter.CTkLabel(master=frame,text_color="red", text=e, font=("Roboto", 16)).pack(pady=8, padx=8)
+        
+        przenies_button = customtkinter.CTkButton(master=frame, text="Przenieś", width=120, height=40, command=Przenies)
+        przenies_button.pack(pady=12, padx=10)
 
-        skladnik_id_label = customtkinter.CTkLabel(master=frame, text="ID składnika:")
-        skladnik_id_label.pack(pady=5, padx=10)
-        skladnik_id_entry = customtkinter.CTkEntry(master=frame)
-        skladnik_id_entry.pack(pady=5, padx=10)
+        back_button = customtkinter.CTkButton(master=frame, text="Wróć", fg_color="red",width=120, height=40, command=Zarzadzanie_Skladnikami)
+        back_button.pack(pady=12, padx=10)
 
-        def submit():
-            numer_sali_z = sala_z_entry.get()
-            numer_sali_do = sala_do_entry.get()
-            skladnik_id = skladnik_id_entry.get()
-            if numer_sali_z.isdigit() and numer_sali_do.isdigit() and skladnik_id.isdigit():
-                numer_sali_z = int(numer_sali_z)
-                numer_sali_do = int(numer_sali_do)
-                skladnik_id = int(skladnik_id)
-                wynik = system.przenies_skladnik(numer_sali_z, numer_sali_do, skladnik_id)
-                wynik_label = customtkinter.CTkLabel(master=frame, text=wynik, text_color="green" if "został przeniesiony" in wynik else "red")
-                wynik_label.pack(pady=5, padx=10)
-            else:
-                error = customtkinter.CTkLabel(master=frame, text="Błędne dane.", text_color="red")
-                error.pack(pady=5, padx=10)
-
-        submit_button = customtkinter.CTkButton(master=frame, text="Przenieś", command=submit)
-        submit_button.pack(pady=12, padx=10)
-        powrot_button = customtkinter.CTkButton(master=frame, fg_color="red", text="Wróć", command=Zarzadzanie_Skladnikami)
-        powrot_button.pack(pady=12, padx=10)
-
+    dodaj_skladnik_button = customtkinter.CTkButton(master=frame, text="Dodaj Składnik", width=160, height=40, command=Dodaj_Skladnik)
+    dodaj_skladnik_button.pack(pady=12, padx=10)
     
-    dodaj_button = customtkinter.CTkButton(master=frame, text="Dodaj Składnik", width=160, height=40, command=Dodaj_Skladnik)
-    dodaj_button.pack(pady=12, padx=10)
-    usun_button = customtkinter.CTkButton(master=frame, text="Usuń Składnik", width=160, height=40, command=Usun_Skladnik)
-    usun_button.pack(pady=12, padx=10)
-    przenies_button = customtkinter.CTkButton(master=frame, text="Przenieś składnik", width=160, height=40, command=Przenies_Skladnik)
-    przenies_button.pack(pady=12,padx=10)
-    powrot_button = customtkinter.CTkButton(master=frame, fg_color="red", text="Wróć", command=Okno_glowne)
-    powrot_button.pack(pady=12, padx=10)
+    usun_skladnik_button = customtkinter.CTkButton(master=frame, text="Usuń Składnik", width=160, height=40, command=Usun_Skladnik)
+    usun_skladnik_button.pack(pady=12, padx=10)
+    
+    przenies_skladnik_button = customtkinter.CTkButton(master=frame, text="Przenieś Składnik", width=160, height=40, command=Przenies_Skladnik)
+    przenies_skladnik_button.pack(pady=12, padx=10)
 
+    back_button = customtkinter.CTkButton(master=frame, text="Wróć", fg_color="red",width=160, height=40, command=Okno_glowne)
+    back_button.pack(pady=12, padx=10)
 def Inwentaryzacja():
     Clear_Window()
     frame = customtkinter.CTkFrame(master=root)
@@ -367,5 +314,9 @@ def Wczytaj_Raport():
     submit_button.pack(pady=12, padx=10)
     powrot_button = customtkinter.CTkButton(master=frame, fg_color="red", text="Wróć", command=Okno_glowne)
     powrot_button.pack(pady=12, padx=10)
+
+
 Okno_glowne()
 root.mainloop()
+
+
