@@ -8,7 +8,7 @@ class SkladnikMajatkowy:
         self.stan = stan
 
     def __str__(self):
-        pass
+        return f'ID: {self.id}, {self.nazwa} (stan: {self.stan})'
 
 class Sprzet(SkladnikMajatkowy):
     def __init__(self, nazwa, stan):
@@ -67,10 +67,27 @@ class System:
         return wyniki
 
     def inwentaryzacja(self):
+        wymagane_skladniki = {
+            'Krzesło': 'meble',
+            'Biurko': 'meble',
+            'Komputer': 'sprzet'
+        }
         result = ""
         for sala in self.sale:
-            result += str(sala) + "\n"
+            result += f'Sala numer {sala.numer}:\n'
+            obecne_skladniki = {skladnik.nazwa: skladnik for skladnik in sala.skladniki}
+            brakujace_skladniki = [
+                nazwa for nazwa, typ in wymagane_skladniki.items()
+                if nazwa not in obecne_skladniki
+            ]
+            for skladnik in sala.skladniki:
+                result += f'  {skladnik}\n'
+            if brakujace_skladniki:
+                result += f'  Brakujące składniki: {", ".join(brakujace_skladniki)}\n'
+            else:
+                result += '  Wszystkie wymagane składniki są obecne.\n'
         return result
+
     def zapisz_raport(self, nazwa_pliku):
         with open(nazwa_pliku, 'w') as plik:
             for sala in self.sale:
@@ -98,3 +115,28 @@ class System:
                         skladnik = Meble(nazwa, stan)
                     skladnik.id = int(skladnik_id)
                     aktualna_sala.dodaj_skladnik(skladnik)
+    def przenies_skladnik(self, numer_sali_z, numer_sali_do, skladnik_id):
+        sala_z = None
+        sala_do = None
+
+        for sala in self.sale:
+            if sala.numer == numer_sali_z:
+                sala_z = sala
+            if sala.numer == numer_sali_do:
+                sala_do = sala
+
+        if not sala_z or not sala_do:
+            return "Jedna z sal nie istnieje."
+
+        skladnik = None
+        for s in sala_z.skladniki:
+            if s.id == skladnik_id:
+                skladnik = s
+                break
+
+        if not skladnik:
+            return "Składnik nie istnieje w podanej sali."
+
+        sala_z.usun_skladnik(skladnik_id)
+        sala_do.dodaj_skladnik(skladnik)
+        return "Składnik został przeniesiony."
