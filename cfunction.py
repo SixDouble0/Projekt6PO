@@ -7,7 +7,6 @@ class SkladnikMajatkowy:
         self.nazwa = nazwa
         self.stan = stan
 
-    @abstractmethod
     def __str__(self):
         pass
 
